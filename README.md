@@ -129,6 +129,32 @@ For interview purposes, I can provide:
 - A time-limited read-only viewer link (7 days)
 - Direct GitHub collaborator access (temporary)
 
+## Manual QA & Test Management
+
+My test management and defect tracking work is hosted on a private Atlassian instance.
+Below is evidence of my manual QA process across a 4-sprint project.
+
+- **Test Case Design:** Structured test cases using Equivalence Partitioning and Boundary Value Analysis
+- **Defect Management:** Bug reports with reproduction steps, severity classification, and root cause analysis
+- **CI/CD Integration:** GitHub Actions configured to post test results directly to Jira
+- **Documentation:** Confluence used for project overview, test strategy, and sprint planning
+
+**Jira Backlog & Sprint Overview**
+![Jira Backlog](docs/jira-evidence/jira-backlog.png)
+
+**Test Case Example — PTS-8 (Preconditions, Steps, EP Analysis)**
+![Jira Test Case](docs/jira-evidence/jira-testcase-PTS-8.png)
+
+**Defect Report Example — PTS-46 (Steps to Reproduce, Root Cause, Fix)**
+![Jira Bug](docs/jira-evidence/jira-bug-PTS-46.png)
+
+**CI/CD to Jira Integration**
+![Jira CI/CD](docs/jira-evidence/jira-cicd.png)
+
+**Confluence Project Documentation**
+![Confluence](docs/jira-evidence/confluence-summary.png)
+
+
 **Contact:** kamerkonak@outlook.com
 
 
