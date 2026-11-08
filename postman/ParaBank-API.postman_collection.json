@@ -1,0 +1,676 @@
+{
+  "info": {
+    "_postman_id": "618d1342-433a-42d1-97ca-62d08a52fd21",
+    "name": "ParaBank API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "31504233"
+  },
+  "item": [
+    {
+      "name": "03-Transfer",
+      "item": [
+        {
+          "name": "Get From Balance(Before)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\npm.environment.set(\"fromBalanceBefore\", pm.response.json().balance);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{fromAccountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{fromAccountId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get to Balance(Before)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.environment.set(\"toBalanceBefore\", pm.response.json().balance);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{toAccountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{toAccountId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "03-Transfer",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const amount = Math.floor(Math.random() * 10) + 1;\npm.environment.set(\"transferAmount\", amount);"
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\n\npm.test(\"Response time under 3s\", () =>\n  pm.expect(pm.response.responseTime).to.be.below(3000));\n\nconst body = pm.response.text();\n\npm.test(\"Confirmation message mentions success\", () =>\n  pm.expect(body.toLowerCase()).to.include(\"success\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transfer?fromAccountId={{fromAccountId}}&toAccountId={{toAccountId}}&amount={{transferAmount}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transfer"
+              ],
+              "query": [
+                {
+                  "key": "fromAccountId",
+                  "value": "{{fromAccountId}}"
+                },
+                {
+                  "key": "toAccountId",
+                  "value": "{{toAccountId}}"
+                },
+                {
+                  "key": "amount",
+                  "value": "{{transferAmount}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get From Balance(After)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\nconst before = Number(pm.environment.get(\"fromBalanceBefore\"));\nconst amount = Number(pm.environment.get(\"transferAmount\"));\nconst after = pm.response.json().balance;\npm.test(\"Source balance decreased by transfer amount\", () =>\n  pm.expect(after).to.be.closeTo(before - amount, 0.001));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{fromAccountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{fromAccountId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get To Balance (After)",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Target balance increased\", () => {\n    let before = Number(pm.environment.get(\"toBalanceBefore\"));\n    let amount = Number(pm.environment.get(\"transferAmount\"));\n    let after = pm.response.json().balance;\n    pm.expect(after).to.be.closeTo(before + amount, 0.001);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{toAccountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{toAccountId}}"
+              ],
+              "query": [
+                {
+                  "key": "",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "02-Accounts",
+      "item": [
+        {
+          "name": "02-Get Accounts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\n\nconst accounts = pm.response.json();\n\npm.test(\"Response is an array with at least 2 accounts\", () => {\n  pm.expect(accounts).to.be.an(\"array\");\n  pm.expect(accounts.length).to.be.at.least(2);\n});\n\nif (accounts.length >= 2) {\n  pm.environment.set(\"fromAccountId\", accounts[0].id);\n  pm.environment.set(\"toAccountId\", accounts[1].id);\n}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/customers/{{customerId}}/accounts",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "customers",
+                "{{customerId}}",
+                "accounts"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Account Details",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\nconst account = pm.response.json();\npm.test(\"Account id matches\", () => pm.expect(String(account.id)).to.eql(String(pm.environment.get(\"fromAccountId\"))));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{fromAccountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{fromAccountId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Create  Accounts",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\nconst created = pm.response.json();\npm.test(\"New account has id\", () => pm.expect(created).to.have.property(\"id\"));\npm.environment.set(\"newAccountId\", created.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/createAccount?customerId={{customerId}}&newAccountType=1&fromAccountId={{fromAccountId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "createAccount"
+              ],
+              "query": [
+                {
+                  "key": "customerId",
+                  "value": "{{customerId}}"
+                },
+                {
+                  "key": "newAccountType",
+                  "value": "1"
+                },
+                {
+                  "key": "fromAccountId",
+                  "value": "{{fromAccountId}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Transactions",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\npm.test(\"Transactions is an array\", () => pm.expect(pm.response.json()).to.be.an(\"array\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/{{fromAccountId}}/transactions",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "{{fromAccountId}}",
+                "transactions"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "01-Auth",
+      "item": [
+        {
+          "name": "01-Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status 200\", () => pm.response.to.have.status(200));\n\npm.test(\"Response time under 3s\", () =>\n  pm.expect(pm.response.responseTime).to.be.below(3000));\n\nconst customer = pm.response.json();\n\npm.test(\"Customer id and name present\", () => {\n  pm.expect(customer).to.have.property(\"id\");\n  pm.expect(customer).to.have.property(\"firstName\");\n});\n\npm.environment.set(\"customerId\", customer.id);"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/login/{{username}}/{{password}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login",
+                "{{username}}",
+                "{{password}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "04-Negative Tests",
+      "item": [
+        {
+          "name": "04-Negative Login",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  ""
+                ]
+              }
+            },
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Wrong password is rejected (4xx)\", () =>\n  pm.expect(pm.response.code).to.be.within(400, 499));\n\npm.test(\"Response does not expose customer data\", () =>\n  pm.expect(pm.response.text()).to.not.include(\"firstName\"));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/login/{{username}}/wrongpassword",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "login",
+                "{{username}}",
+                "wrongpassword"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Invalid Account ID",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejected with 4xx error\", () => {\n    pm.expect(pm.response.code).to.be.within(400, 499);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/accounts/999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "accounts",
+                "999999"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer Exceeds Balance",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejected with 4xx error\", () => {\n    pm.expect(pm.response.code).to.be.within(400, 499);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transfer?fromAccountId={{fromAccountId}}&toAccountId={{toAccountId}}&amount=9999999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transfer"
+              ],
+              "query": [
+                {
+                  "key": "fromAccountId",
+                  "value": "{{fromAccountId}}"
+                },
+                {
+                  "key": "toAccountId",
+                  "value": "{{toAccountId}}"
+                },
+                {
+                  "key": "amount",
+                  "value": "9999999"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer Zero Amount",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejected with 4xx error\", () => {\n    pm.expect(pm.response.code).to.be.within(400, 499);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transfer?fromAccountId={{fromAccountId}}&toAccountId={{toAccountId}}&amount=0",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transfer"
+              ],
+              "query": [
+                {
+                  "key": "fromAccountId",
+                  "value": "{{fromAccountId}}"
+                },
+                {
+                  "key": "toAccountId",
+                  "value": "{{toAccountId}}"
+                },
+                {
+                  "key": "amount",
+                  "value": "0"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer to Same Account",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Rejected with 4xx error\", () => {\n    pm.expect(pm.response.code).to.be.within(400, 499);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transfer?fromAccountId={{fromAccountId}}&toAccountId={{fromAccountId}}&amount=50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transfer"
+              ],
+              "query": [
+                {
+                  "key": "fromAccountId",
+                  "value": "{{fromAccountId}}"
+                },
+                {
+                  "key": "toAccountId",
+                  "value": "{{fromAccountId}}"
+                },
+                {
+                  "key": "amount",
+                  "value": "50"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Transfer Negative Amount",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Negative amount is rejected (4xx)\", () => {\n    pm.expect(pm.response.code).to.be.within(400, 499);\n});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/transfer?fromAccountId={{fromAccountId}}&toAccountId={{toAccountId}}&amount=-50",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "transfer"
+              ],
+              "query": [
+                {
+                  "key": "fromAccountId",
+                  "value": "{{fromAccountId}}"
+                },
+                {
+                  "key": "toAccountId",
+                  "value": "{{toAccountId}}"
+                },
+                {
+                  "key": "amount",
+                  "value": "-50"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

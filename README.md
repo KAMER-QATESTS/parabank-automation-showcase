@@ -120,7 +120,24 @@ CI passes values via `-D` flags. Developers override locally. No hardcoded value
 - Dockerised local test execution
 
 -----
+## API Testing (Postman & Newman)
 
+To complement the UI automation, I have built a comprehensive API test suite for the ParaBank services using **Postman** and **Newman**.
+
+- **Tools:** Postman, Newman, JavaScript (for test scripts)
+- **Advanced Features:**
+    - **Variable Chaining:** Extracting IDs from responses and automatically saving them to the environment for subsequent requests.
+    - **Dynamic Data Generation:** Using Pre-request scripts to generate random transfer amounts.
+    - **State Verification:** Fetching account balances before and after a transfer to mathematically verify that the source account decreased and the target account increased.
+- **Coverage:** 25 automated tests covering Authentication, Accounts, Transfers, and Negative scenarios.
+- **Bug Discovery:** My negative tests uncovered **4 critical business logic bugs** in the API. For example, the system incorrectly allowed transfers that exceeded the account balance, zero amounts, negative amounts, and transfers to the same account.
+
+**Postman Collection & Environment files are available in the [`postman/`](postman/) directory. You can also view the generated Newman HTML report in the same folder.**
+
+**Collection Runner Results (Showing passed tests and failed bug assertions):**
+![Postman Run Results](postman/postman-run-results.png)
+
+---
 ## Request Full Source Access
 
 This repository is private to protect the work.  
@@ -128,7 +145,7 @@ For interview purposes, I can provide:
 
 - A time-limited read-only viewer link (7 days)
 - Direct GitHub collaborator access (temporary)
-
+---
 ## Manual QA & Test Management
 
 My test management and defect tracking work is hosted on a private Atlassian instance.
