@@ -46,7 +46,7 @@ pom.xml (parent)
 ```
 
 👉 [Full Architecture Documentation](docs/architecture.md)
-
+👉 [Click here to view Java Code Snippets](java-evidence/code-snippets.md) 
 -----
 
 ## Test Coverage
@@ -138,6 +138,21 @@ To complement the UI automation, I have built a comprehensive API test suite for
 ![Postman Run Results](postman/postman-run-results.png)
 
 ---
+## Python API Testing (Pytest)
+
+To demonstrate my Python skills, I have written a small API testing suite using **Pytest** and **Requests**. The full source code is in the private repository.
+
+- **Tools:** Python 3, Pytest, Requests.
+- **Features:** Used Pytest Fixtures (`conftest.py`) for session management and `@pytest.mark.parametrize` for data-driven negative testing.
+- **Bug Discovery:** Parametrized tests successfully confirmed the same business logic bugs found in Postman (e.g., accepting negative or zero transfer amounts).
+
+**Pytest Execution Results (8 tests passed):**
+![Pytest Results](python-evidence/pytest-results.png)
+
+👉 [Click here to view the Code Snippets](python-evidence/code-snippets.md)
+
+---
+
 ## Request Full Source Access
 
 This repository is private to protect the work.  
